@@ -1,0 +1,4 @@
+# install platform-specific binaries
+curl -sSL https://goo.gl/PabWJX | bash
+
+sudo apt-get install jq
