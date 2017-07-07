@@ -1,4 +1,21 @@
 # install platform-specific binaries
-curl -sSL https://goo.gl/PabWJX | bash
 
-sudo apt-get install jq
+
+# install docker-ce
+sudo apt-get install apt-transport-https ca-certificates curl software-properties-common
+sudo add-apt-repository    "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+   $(lsb_release -cs) \
+   stable"
+sudo apt-get update
+sudo apt-get install docker-ce
+
+# install golang
+
+sudo add-apt-repository ppa:longsleep/golang-backports
+sudo apt-get update
+sudo apt-get install golang-go
+
+# pull fabric 1.0-rc images and binary in ./bin
+curl -sSL https://goo.gl/PabWJX | sudo bash
+
+

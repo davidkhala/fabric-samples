@@ -1,0 +1,2 @@
+# balance-transfer example dependencies
+sudo apt-get install jq
