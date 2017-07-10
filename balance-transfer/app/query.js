@@ -202,12 +202,10 @@ var getInstalledChaincodes = function(peer, type, username, org) {
 			}
 			var details = [];
 			for (let i = 0; i < response.chaincodes.length; i++) {
-				logger.debug('name: ' + response.chaincodes[i].name + ', version: ' +
-					response.chaincodes[i].version + ', path: ' + response.chaincodes[i].path
-				);
-				details.push('name: ' + response.chaincodes[i].name + ', version: ' +
-					response.chaincodes[i].version + ', path: ' + response.chaincodes[i].path
-				);
+				let content =JSON.stringify(response.chaincodes[i]) 
+				logger.debug(content);
+				
+				details.push(content);
 			}
 			return details;
 		} else {
