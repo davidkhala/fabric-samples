@@ -6,13 +6,10 @@
 #
 
 UP_DOWN="$1"
-FILTER="$2"
+FILTER="hyperledger\|couchdb\|example.com"
 
 function dkcl() {
-	if [ -z "$FILTER" ]; then
-		FILTER='peer|example.com'
-	fi
-	CONTAINER_IDS=$(docker ps -aq -f name="$FILTER")
+	CONTAINER_IDS=$(docker ps | grep "$FILTER" | awk '{ print $1 }')
 
 	echo
 	if [ -z "$CONTAINER_IDS" -o "$CONTAINER_IDS" = " " ]; then
@@ -24,7 +21,7 @@ function dkcl() {
 }
 
 function dkrm() {
-	DOCKER_IMAGE_IDS=$(docker images | grep "dev\|none\|test-vp\|peer[0-9]-" | awk '{print $3}')
+	DOCKER_IMAGE_IDS=$(docker images | grep "$FILTER" | awk '{print $3}')
 	echo
 	if [ -z "$DOCKER_IMAGE_IDS" -o "$DOCKER_IMAGE_IDS" = " " ]; then
 		echo "========== No images available for deletion ==========="
@@ -38,10 +35,10 @@ function networkDown() {
 	#teardown the network and clean the containers and intermediate images
 	cd artifacts
 	docker-compose down
-	dkcl
-	dkrm
+	
+	
 	#Cleanup the material
-	rm -rf /tmp/hfc-test-kvs_peerOrg* $HOME/.hfc-key-store/ /tmp/fabric-client-kvs_peerOrg*
+	rm -rf /tmp/hfc-test-kvs_peerOrg* ~/.hfc-key-store/ /tmp/fabric-client-kvs_peerOrg*
 	cd -
 }
 
@@ -73,10 +70,13 @@ elif [ "${UP_DOWN}" == "down" ]; then ## Clear the network
 elif [ "${UP_DOWN}" == "restart" ]; then ## Restart the network
 	networkDown
 	networkUp
-elif [ "${UP_DOWN}" == "resume" ]; then ## Resume the network
-	networkResume
-elif [ "${UP_DOWN}" == "pause" ]; then ## Pause the network
-	networkPause
+elif [ "${UP_DOWN}" == "destory" ]; then ## clear local images
+	cd artifacts
+	docker-compose down
+	dkcl
+	dkrm
+	rm -rf /tmp/hfc-test-kvs_peerOrg* ~/.hfc-key-store/ /tmp/fabric-client-kvs_peerOrg*
+	cd -
 else
 
 	exit 1
