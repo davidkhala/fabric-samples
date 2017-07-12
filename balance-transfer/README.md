@@ -40,7 +40,7 @@ docker-compose -f artifacts/docker-compose.yaml up
 ```
 ##### Terminal Window 2
 
-* Execute the REST APIs from the section [Sample REST APIs Requests](https://github.com/hyperledger/fabric-sdk-node/tree/master/examples/balance-transfer#running-the-sample-program)
+* Execute the REST APIs from the section (Deprecated)[Sample REST APIs Requests](https://github.com/hyperledger/fabric-sdk-node/tree/master/examples/balance-transfer#running-the-sample-program)
 
 
 ### Option 2:
