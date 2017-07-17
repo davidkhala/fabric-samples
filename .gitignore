@@ -23,6 +23,8 @@ fabcar/node_modules/
 # balance transfer sample
 balance-transfer/.DS_Store
 balance-transfer/node_modules/*
+balance-transfer/dist/*
 balance-transfer/.idea/*
 basic-network/.idea/*
+
 
