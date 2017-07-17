@@ -6,8 +6,19 @@
 #
 
 UP_DOWN="$1"
-FILTER="hyperledger\|couchdb\|example.com"
+FILTER="dev\|fabric\|hyperledger\|couchdb\|example.com"
+VERS="$2"
+COMPOSE_FILENAME="docker-compose"
+COMPOSE_FILE=""
+COMPOSE_FILE_SUFFIX=".yaml"
 
+function dockerView(){
+
+    echo =====container
+    docker ps -a
+    echo =====images
+    docker images -a
+}
 function dkcl() {
 	echo "=====containers to delete:"
 	docker ps -a | grep "$FILTER"
@@ -21,7 +32,7 @@ function dkcl() {
 
 function dkrm() {
 	echo "=====images to delete:"
-	docker images | grep "dev\|none\|$FILTER"
+	docker images | grep "none\|$FILTER"
 	DOCKER_IMAGE_IDS=$(docker images | grep "dev\|none\|$FILTER" | awk '{print $3}')
 	# FIXME: hyperledger images cannot be removed here???
 	echo
@@ -36,7 +47,7 @@ function dkrm() {
 function networkDown() {
 	#teardown the network and clean the containers and intermediate images
 	cd artifacts
-	docker-compose down
+	docker-compose -f $COMPOSE_FILE down
 	dkcl
 	dkrm
 	#Cleanup the material
@@ -44,22 +55,21 @@ function networkDown() {
 	cd -
 	echo
 	echo ===down finished
-	echo =====images
-	docker images -a
+	dockerView
 }
 
 function networkUp() {
-	# ccenv/tools is required before compose up!!!tricky
-	#    docker pull hyperledger/fabric-tools
 	# did it in docker-compose file
+	# ccenv is required for success instantiate !!!tricky
+	#   docker pull hyperledger/fabric-ccenv:x86_64-1.0.0
+
 	cd artifacts
 	#Start the network
-	docker-compose up -d
+	docker-compose -f $COMPOSE_FILE up -d
 		
 	cd -
 	echo ===up finished
-	echo =====images
-	docker images -a
+	dockerView
 	installNodeModules
 
 	PORT=4000 node app
@@ -75,6 +85,19 @@ function installNodeModules() {
 	fi
 	echo
 }
+
+if [ ! -z "$VERS" ]; then
+    COMPOSE_FILENAME=$COMPOSE_FILENAME-$VERS
+fi
+COMPOSE_FILE=$COMPOSE_FILENAME$COMPOSE_FILE_SUFFIX
+echo docker compose file: $COMPOSE_FILE
+# check file existence
+cd artifacts
+if [ ! -f $COMPOSE_FILE ]; then
+    echo Compose file not found!!
+    exit 1
+fi
+cd -
 
 if [ "${UP_DOWN}" == "up" ]; then
 	networkUp
