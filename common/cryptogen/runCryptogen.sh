@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 CURRENT=$PWD
 CONFIG_OUTPUT=$CURRENT/crypto-config
 CONFIG_INPUT=$CURRENT/cryptogen.yaml
